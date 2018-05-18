@@ -7,6 +7,8 @@ import java.util.Collection;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,33 +24,35 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 @Table(name="User")
 @Scope("session")
 public  class User implements UserDetails{
-	public static enum Role{ USER }
-	/**
-	 * Description of the property id.
-	 */
+	
+	public static enum Role{ USER , ADMIN }
+
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long id ;
-	/**
-	 * Description of the property email.
-	 */
 	@Column(unique = true)
 	private String username ;
-	/**
-	 * Description of the property password.
-	 */
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password ;
-	/**
-	 * Description of the property role , to grant authority to the user .
-	 */
     private String  role;
-    /**
-	 * Description of the property full name.
-	 */
     private String fullName;
+    
+    
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "city_id", nullable = true)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private City city;
 
-    public User(){
+	
+    public City getCity() {
+		return city;
+	}
+
+	public void setCity(City city) {
+		this.city = city;
+	}
+
+	public User(){
     	
     }
     
