@@ -37,8 +37,55 @@ public class ShopController {
 	
 	@Autowired
 	private CategoryService categoryService;
+		
 	
+	
+	//Category Controllers
+	@CrossOrigin
+    @PostMapping("/category")	
+	public ResponseEntity<?> createCategory(@RequestBody Category category) {
+		if (categoryService.find(category.getName()) != null) {
+			logger.error("Category already exist " + category.getName());
+			return new ResponseEntity(
+					new CustomErrorType("category with name " + category.getName() + " already exist "),
+					HttpStatus.CONFLICT);
+		}
 
+		
+		return new ResponseEntity<Category>(categoryService.save(category), HttpStatus.CREATED);
+	}
+	
+	
+	@CrossOrigin
+	@GetMapping("/categories")
+	public List<Category> getCategories(){
+		return  categoryService.findAll();
+	}
+	
+	@CrossOrigin
+	@GetMapping("/category/{id}")
+	public Category getCategory(@PathVariable Long id){
+		return  categoryService.findById(id);
+	}
+	
+	@CrossOrigin
+	@RequestMapping(value="/category/{id}", method=RequestMethod.DELETE)
+	public boolean deleteCategory(@PathVariable Long id) {
+		categoryService.deleteById(id);
+		 return true;	
+	}
+	
+	@CrossOrigin
+	@RequestMapping(value="/category/{id}", method=RequestMethod.PUT)
+	public Category updateCategory(@PathVariable Long id , @RequestBody Category category) {
+		
+		category.setId(id);
+		return categoryService.save(category);	
+	}
+	
+	
+	
+	// Shop Controllers
 	@CrossOrigin
     @GetMapping("/category/{categoryId}/shops")
     public Page<Shop> getAllShopsByCategoryId(@PathVariable (value = "categoryId") Long categoryId,
@@ -49,7 +96,7 @@ public class ShopController {
 	
 	@CrossOrigin
     @PostMapping("/category/{categoryId}/shops")
-	public ResponseEntity<?> create(@PathVariable (value = "categoryId") Long categoryId, 
+	public ResponseEntity<?> createShop(@PathVariable (value = "categoryId") Long categoryId, 
 			@RequestBody Shop shop) {
     	
 		if (shopService.find(shop.getName()) != null) {
@@ -69,10 +116,10 @@ public class ShopController {
 	
 	@CrossOrigin
 	@RequestMapping(value="/shops/{id}", method=RequestMethod.DELETE)
-	public boolean delete(@PathVariable Long id) {
+	public boolean deleteShop(@PathVariable Long id) {
 		shopService.deleteById(id);
 		 return true;	
 	}
 	
-  
+	
 }
