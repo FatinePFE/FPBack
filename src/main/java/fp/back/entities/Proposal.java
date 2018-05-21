@@ -1,25 +1,21 @@
 package fp.back.entities;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import fp.back.model.AuditModel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 @Entity
-public class Proposal extends AuditModel {
+public class Proposal {
 
 	public static enum Type {
 		ACHAT
@@ -39,40 +35,28 @@ public class Proposal extends AuditModel {
 	private String type;
 	private String delivery;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "proposal_shops", joinColumns = @JoinColumn(name = "proposal_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "shop_id", referencedColumnName = "id"))
-	List<Shop> shops;
-
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_user", nullable = true)
+	@JoinColumn(name = "id_user", nullable = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "form_city", nullable = true)
+	@JoinColumn(name = "form_city", nullable = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private City fromcity;
-
-	public List<Shop> getShops() {
-		return shops;
-	}
-
-	public void setShops(List<Shop> shops) {
-		this.shops = shops;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
+	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "to_city", nullable = true)
+	@JoinColumn(name = "to_city", nullable = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private City tocity;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_shop", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Shop shop;
+
+
 
 	public Long getId() {
 		return id;
@@ -130,20 +114,57 @@ public class Proposal extends AuditModel {
 		this.delivery = delivery;
 	}
 
+
+	@JsonIgnore
+	public Shop getShop() {
+		return shop;
+	}
+
+	@JsonSetter
+	public void setShop(Shop shop) {
+		this.shop = shop;
+	}
+
+	@JsonIgnore
+	public User getUser() {
+		return user;
+	}
+
+	@JsonSetter
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
+	@JsonIgnore
 	public City getFromcity() {
 		return fromcity;
 	}
 
+	@JsonSetter
 	public void setFromcity(City fromcity) {
 		this.fromcity = fromcity;
 	}
 
+	@JsonIgnore
 	public City getTocity() {
 		return tocity;
 	}
 
+	@JsonSetter
 	public void setTocity(City tocity) {
 		this.tocity = tocity;
+	}
+	
+	public Long getFromCityId(){
+		return this.fromcity.getId();
+	}
+	
+	public Long getToCityId(){
+		return this.tocity.getId();
+	}
+	
+	public Long getIdUser(){
+		return this.user.getId();
 	}
 
 }

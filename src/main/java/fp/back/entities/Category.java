@@ -30,11 +30,5 @@ public class Category {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Object map(Object object) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
-	
+
 }

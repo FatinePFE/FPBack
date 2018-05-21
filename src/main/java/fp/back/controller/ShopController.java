@@ -113,13 +113,5 @@ public class ShopController {
 		return new ResponseEntity<Shop>(shopService.save(shop), HttpStatus.CREATED);
 	}
 	
-	
-	@CrossOrigin
-	@RequestMapping(value="/shops/{id}", method=RequestMethod.DELETE)
-	public boolean deleteShop(@PathVariable Long id) {
-		shopService.deleteById(id);
-		 return true;	
-	}
-	
-	
+
 }

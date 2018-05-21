@@ -3,10 +3,13 @@ package fp.back.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fp.back.dao.ProposalRepository;
 import fp.back.entities.Proposal;
+import fp.back.entities.Shop;
 
 
 @Service
@@ -43,6 +46,11 @@ public class ProposalService {
 	public boolean deleteById(Long id) {
 		proposalRepository.delete(id);
 		return true; 
+	}
+	
+	public Page<Proposal> findByUserId(Long userId, Pageable pageable) {
+		
+		return proposalRepository.findByUserId(userId, pageable);
 	}
 
 }
