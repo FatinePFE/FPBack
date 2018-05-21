@@ -33,7 +33,7 @@ public class ProposalController {
 	UserService userService;
 	
 	
-	@CrossOrigin
+
     @PostMapping("/account/{userId}/proposal")
 	public ResponseEntity<?> createProposal(@PathVariable (value = "userId") Long userId, 
 			@RequestBody Proposal proposal) {
@@ -46,12 +46,18 @@ public class ProposalController {
 	}
 	
 	
-	// Shop Controllers
+
+	@CrossOrigin
+    @GetMapping("/city/{cityId}/proposal")
+    public Page<Proposal> getAllProposalByFromCityId(@PathVariable (value = "cityId") Long cityId, Pageable pageable) {
+        return proposalService.findByFromCityId(cityId, pageable);
+    }
+	
+
 	@CrossOrigin
     @GetMapping("/account/{userId}/proposal")
     public Page<Proposal> getAllProposalByUserId(@PathVariable (value = "userId") Long userId, Pageable pageable) {
         return proposalService.findByUserId(userId, pageable);
     }
-	
 	
 }

@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 
@@ -44,14 +45,17 @@ public  class User implements UserDetails{
 	private City city;
 
 	
+	@JsonIgnore
     public City getCity() {
 		return city;
 	}
 
+	@JsonSetter
 	public void setCity(City city) {
 		this.city = city;
 	}
 
+	
 	public User(){
     	
     }

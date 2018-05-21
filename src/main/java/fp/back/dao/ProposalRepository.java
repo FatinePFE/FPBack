@@ -13,4 +13,7 @@ public interface ProposalRepository extends JpaRepository<Proposal, Long>{
 	public Proposal findByName(String name);
 	
 	Page<Proposal> findByUserId(Long id, Pageable pageable);
+	
+	Page<Proposal> findByFromcityId(Long id, Pageable pageable);
+	
 }

@@ -52,5 +52,10 @@ public class ProposalService {
 		
 		return proposalRepository.findByUserId(userId, pageable);
 	}
+	
+	public Page<Proposal> findByFromCityId(Long cityId, Pageable pageable) {
+		
+		return proposalRepository.findByFromcityId(cityId, pageable);
+	}
 
 }
