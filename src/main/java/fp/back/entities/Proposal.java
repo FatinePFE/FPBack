@@ -1,170 +1,149 @@
 package fp.back.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Proposal {
 
-	public static enum Type {
-		ACHAT
-	}
+    public static enum Type {
+        ACHAT
+    }
 
-	public static enum Method {
-		POSTE, DOMICILE
-	}
+    public static enum Method {
+        POSTE, DOMICILE
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String name;
-	private String description;
-	private String price;
-	private boolean status;
-	private String type;
-	private String delivery;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private String description;
+    private String price;
+    private boolean status;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_user", nullable = false)
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private User user;
+    @ManyToMany()
+    private List<DeliveryType> deliveryTypes = new ArrayList<>();
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "form_city", nullable = false)
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private City fromcity;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "to_city", nullable = false)
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private City tocity;
-	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_shop", nullable = false)
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Shop shop;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_user", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "from_city", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private City fromcity;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "to_city", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private City tocity;
 
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Shop> shops = new ArrayList<>();
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public String getPrice() {
-		return price;
-	}
+    public String getPrice() {
+        return price;
+    }
 
-	public void setPrice(String price) {
-		this.price = price;
-	}
+    public void setPrice(String price) {
+        this.price = price;
+    }
 
-	public boolean isStatus() {
-		return status;
-	}
+    public boolean isStatus() {
+        return status;
+    }
 
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public List<DeliveryType> getDeliveryTypes() {
+        return deliveryTypes;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setDeliveryTypes(List<DeliveryType> deliveryTypes) {
+        this.deliveryTypes = deliveryTypes;
+    }
 
-	public String getDelivery() {
-		return delivery;
-	}
+    public List<Shop> getShops() {
+        return shops;
+    }
 
-	public void setDelivery(String delivery) {
-		this.delivery = delivery;
-	}
+    @JsonSetter
+    public void setShops(List<Shop> shops) {
+        this.shops = shops;
+    }
 
+    public User getUser() {
+        return user;
+    }
 
-	@JsonIgnore
-	public Shop getShop() {
-		return shop;
-	}
+    @JsonSetter
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-	@JsonSetter
-	public void setShop(Shop shop) {
-		this.shop = shop;
-	}
+    public City getFromcity() {
+        return fromcity;
+    }
 
-	@JsonIgnore
-	public User getUser() {
-		return user;
-	}
+    @JsonSetter
+    public void setFromcity(City fromcity) {
+        this.fromcity = fromcity;
+    }
 
-	@JsonSetter
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
-	@JsonIgnore
-	public City getFromcity() {
-		return fromcity;
-	}
+    public City getTocity() {
+        return tocity;
+    }
 
-	@JsonSetter
-	public void setFromcity(City fromcity) {
-		this.fromcity = fromcity;
-	}
+    @JsonSetter
+    public void setTocity(City tocity) {
+        this.tocity = tocity;
+    }
 
-	@JsonIgnore
-	public City getTocity() {
-		return tocity;
-	}
+    public Long getFromCityId() {
+        return this.fromcity.getId();
+    }
 
-	@JsonSetter
-	public void setTocity(City tocity) {
-		this.tocity = tocity;
-	}
-	
-	public Long getFromCityId(){
-		return this.fromcity.getId();
-	}
-	
-	public Long getToCityId(){
-		return this.tocity.getId();
-	}
-	
-	public Long getIdUser(){
-		return this.user.getId();
-	}
+    public Long getToCityId() {
+        return this.tocity.getId();
+    }
+
+    public Long getIdUser() {
+        return this.user.getId();
+    }
 
 }

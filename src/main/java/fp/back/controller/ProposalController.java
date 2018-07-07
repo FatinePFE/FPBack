@@ -1,25 +1,20 @@
 package fp.back.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import fp.back.entities.Proposal;
 import fp.back.entities.User;
 import fp.back.services.ProposalService;
 import fp.back.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/proposal")
 public class ProposalController {
 
 	
@@ -31,10 +26,11 @@ public class ProposalController {
 	
 	@Autowired
 	UserService userService;
-	
+
+
 	
 
-    @PostMapping("/account/{userId}/proposal")
+    @PostMapping("/create/{userId}")
 	public ResponseEntity<?> createProposal(@PathVariable (value = "userId") Long userId, 
 			@RequestBody Proposal proposal) {
     	
@@ -44,10 +40,15 @@ public class ProposalController {
 		
 		return new ResponseEntity<Proposal>(proposalService.save(proposal), HttpStatus.CREATED);
 	}
-	
+
+    @CrossOrigin
+    @GetMapping("/list")
+    public List<Proposal> findAll() {
+        return proposalService.findAll();
+    }
 	
 
-	@CrossOrigin
+	/*@CrossOrigin
     @GetMapping("/city/{cityId}/proposal")
     public Page<Proposal> getAllProposalByFromCityId(@PathVariable (value = "cityId") Long cityId, Pageable pageable) {
         return proposalService.findByFromCityId(cityId, pageable);
@@ -58,6 +59,6 @@ public class ProposalController {
     @GetMapping("/account/{userId}/proposal")
     public Page<Proposal> getAllProposalByUserId(@PathVariable (value = "userId") Long userId, Pageable pageable) {
         return proposalService.findByUserId(userId, pageable);
-    }
+    }*/
 	
 }

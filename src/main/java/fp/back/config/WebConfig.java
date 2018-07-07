@@ -16,67 +16,69 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import fp.back.services.AppUserDetailsService;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
 @Configurable
 @EnableWebSecurity
+@EnableSwagger2
 // Modifying or overriding the default spring boot security.
 public class WebConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	AppUserDetailsService appUserDetailsService;
+    @Autowired
+    AppUserDetailsService appUserDetailsService;
 
-	// This method is for overriding the default AuthenticationManagerBuilder.
-	// We can specify how the user details are kept in the application. It may
-	// be in a database, LDAP or in memory.
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(appUserDetailsService);
-	}
+    // This method is for overriding the default AuthenticationManagerBuilder.
+    // We can specify how the user details are kept in the application. It may
+    // be in a database, LDAP or in memory.
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(appUserDetailsService);
+    }
 
-	// this configuration allow the client app to access the this api 
-	// all the domain that consume this api must be included in the allowed o'rings 
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-	    return new WebMvcConfigurerAdapter() {
-	        @Override
-	        public void addCorsMappings(CorsRegistry registry) {
-	            registry.addMapping("/**").allowedOrigins("http://localhost:4200");
-	          
-	        }
-	    };
-	}
-	// This method is for overriding some configuration of the WebSecurity
-	// If you want to ignore some request or request patterns then you can
-	// specify that inside this method
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		super.configure(web);
-	}
+    // this configuration allow the client app to access the this api
+    // all the domain that consume this api must be included in the allowed o'rings
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("http://localhost:4200");
 
-	// This method is used for override HttpSecurity of the web Application.
-	// We can specify our authorization criteria inside this method.
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.cors().and()
-		// starts authorizing configurations
-		.authorizeRequests()
-		// ignoring the guest's urls "
-		.antMatchers("/account/register","/account/login","/logout").permitAll()
-		// authenticate all remaining URLS
-		.anyRequest().fullyAuthenticated().and()
+            }
+        };
+    }
+
+    // This method is for overriding some configuration of the WebSecurity
+    // If you want to ignore some request or request patterns then you can
+    // specify that inside this method
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        super.configure(web);
+    }
+
+    // This method is used for override HttpSecurity of the web Application.
+    // We can specify our authorization criteria inside this method.
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.headers().frameOptions().disable().and().cors().and()
+                // starts authorizing configurations
+                .authorizeRequests()
+                        // ignoring the guest's urls "
+                .antMatchers("/account/register", "/account/login", "/logout").permitAll()
+                .antMatchers("/**").permitAll().and()
       /* "/logout" will log the user out by invalidating the HTTP Session,
        * cleaning up any {link rememberMe()} authentication that was configured, */
-		.logout()
-        .permitAll()
-		.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
-        .and()
-		// enabling the basic authentication
-		.httpBasic().and()
-		// configuring the session on the server
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
-		// disabling the CSRF - Cross Site Request Forgery
-		.csrf().disable();
-	}
+                .logout()
+                .permitAll()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
+                .and()
+                        // enabling the basic authentication
+                .httpBasic().and()
+                // configuring the session on the server
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
+                // disabling the CSRF - Cross Site Request Forgery
+                .csrf().disable();
+    }
 
 }

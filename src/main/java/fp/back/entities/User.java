@@ -33,13 +33,13 @@ public  class User implements UserDetails{
 	private Long id ;
 	@Column(unique = true)
 	private String username ;
-	@JsonProperty(access = Access.WRITE_ONLY)
+	@JsonIgnore
 	private String password ;
     private String  role;
     private String fullName;
     
     
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "city_id", nullable = true)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private City city;
